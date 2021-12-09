@@ -8,22 +8,28 @@ class Solution {
     
     private func areWordsSorted(_ words: [String],
                                 byOrder order: [Character: Int]) -> Bool {
-        for (index, element) in words.enumerated() {
+        for (index, element) in words.enumerated() where index + 1 <  words.count {
             let nextWord = words[index + 1]
             let nextWordLength = nextWord.count
             let elementLength = element.count
-            for characterIndex in 0..<elementLength {
-                guard characterIndex < nextWordLength else { return false }
+            let minimum = min(elementLength, nextWordLength)
+            for characterIndex in 0..<minimum {
                 if element[characterIndex] != nextWord[characterIndex],
-                order[element[characterIndex]]! > order[nextWord[characterIndex]]! { return false }
-                break
+                   order[element[characterIndex]]! > order[nextWord[characterIndex]]! {
+                    return false
+                } else if element[characterIndex] != nextWord[characterIndex],
+                          order[element[characterIndex]]! < order[nextWord[characterIndex]]! {
+                    break
+                } else if characterIndex == minimum - 1, elementLength > nextWordLength {
+                    return false
+                }
             }
         }
         return true
     }
     
     private func makeOrderDictionary(_ order: String) -> [Character: Int] {
-        var orderDictionary = [Character: Int]() 
+        var orderDictionary = [Character: Int]()
         order.enumerated().forEach { (index, element) in
             orderDictionary[element] = index
         }
